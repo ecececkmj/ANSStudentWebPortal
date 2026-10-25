@@ -282,6 +282,29 @@
         #view-events .content-wrapper { padding: 10px 20px !important; }
         #view-events .page-header-box { padding: 12px 22px; margin-bottom: 12px; }
         #view-events .page-header-box h2 { font-size: 1.3rem; }
+
+        /* SAME-SIZE HEADERS: Calendar, Post Announcement and Schedule & Manage Events */
+        #view-calendar .page-header-box,
+        #view-announcements .page-header-box,
+        #view-events .page-header-box {
+            height: 64px; box-sizing: border-box; padding: 0 24px; margin-bottom: 14px;
+            display: flex; align-items: center; gap: 16px; overflow: hidden;
+        }
+        #view-calendar .page-header-box h2,
+        #view-announcements .page-header-box h2,
+        #view-events .page-header-box h2 { font-size: 1.4rem; margin: 0; white-space: nowrap; }
+        #view-calendar .page-header-box p,
+        #view-announcements .page-header-box p,
+        #view-events .page-header-box p {
+            margin: 0 !important; font-size: 0.85rem; color: #ddd; min-width: 0;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        @media (max-width: 768px) {
+            #view-calendar .page-header-box,
+            #view-announcements .page-header-box,
+            #view-events .page-header-box { height: auto; min-height: 56px; padding: 12px 16px; flex-wrap: wrap; gap: 4px 12px; }
+            #view-calendar .page-header-box p { display: none; }   /* phones: keep all three headers the same height */
+        }
         .ev-box { max-width: 100%; margin: 0 0 14px 0; padding: 16px 22px; border-radius: 12px; border: 1px solid rgba(255,215,0,0.2); }
         .ev-title { color: #FFD700; margin: 0 0 10px 0; font-size: 1.1rem; }
         .ev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; align-items: end; }
@@ -411,6 +434,7 @@
         .dot-container::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.5); border-radius: 4px; }
         .event-dot { font-size: 0.8rem; padding: 3px 6px; border-radius: 4px; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: bold; flex-shrink: 0; max-width: 100%; box-sizing: border-box; }
         .event-campus { background: rgba(52, 152, 219, 0.8); border-left: 2px solid #3498db; }
+        .event-announce { background: rgba(142, 68, 173, 0.85); border-left: 2px solid #9b59b6; color: white; }
         .event-personal { background: #e67e22; border-left: 2px solid rgba(255,255,255,0.6); color: white; }
         .agenda-personal { background: rgba(0,0,0,0.6); padding: 12px 14px; border-radius: 8px; border-left: 5px solid #FFD700; position: relative; }
         .agenda-personal .k { font-size: 0.8rem; font-weight: bold; color: #FFD700; }
@@ -453,7 +477,7 @@
         
         <!-- Account Avatar -->
         <div style="width: 40px; height: 40px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; margin-bottom: 5px;">T</div>
-        <div style="color: #FFD700; font-size: 0.75rem; margin-bottom: 20px;">{{ 'SSLG' if role == 'sslg' else 'Teacher' }} {{ username }}</div>
+        <div style="color: #FFD700; font-size: 0.75rem; margin-bottom: 20px;">{{ 'SSLG' if role == 'sslg' else ('Admin' if is_admin else 'Teacher') }} {{ username }}</div>
 
         <!-- Navigation Links -->
         <a id="nav-home" class="side-link active" onclick="switchViewAndRemember('home')">
@@ -569,7 +593,7 @@
                     
                     <svg viewBox="0 0 24 24" width="22" height="22" fill="#FFD700" style="margin-right: 15px; flex-shrink: 0;"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     
-                    <input type="text" id="globalSearchInput" placeholder="Search for students, events, or classes..." style="width: 100%; border: none; background: transparent; color: white; padding: 10px 0; font-size: 1.05rem; outline: none; font-family: inherit;" onfocus="document.getElementById('searchContainerBox').style.border='1px solid #FFD700'; document.getElementById('searchContainerBox').style.boxShadow='0 8px 24px rgba(255, 215, 0, 0.2)';" onblur="document.getElementById('searchContainerBox').style.border='1px solid rgba(255, 215, 0, 0.3)'; document.getElementById('searchContainerBox').style.boxShadow='0 8px 24px rgba(0,0,0,0.4)';" onkeyup="performGlobalSearch()" autocomplete="off">
+                    <input type="text" id="globalSearchInput" placeholder="Search for {{ 'events or announcements' if role == 'sslg' else 'students, events, or announcements' }}..." style="width: 100%; border: none; background: transparent; color: white; padding: 10px 0; font-size: 1.05rem; outline: none; font-family: inherit;" onfocus="document.getElementById('searchContainerBox').style.border='1px solid #FFD700'; document.getElementById('searchContainerBox').style.boxShadow='0 8px 24px rgba(255, 215, 0, 0.2)';" onblur="document.getElementById('searchContainerBox').style.border='1px solid rgba(255, 215, 0, 0.3)'; document.getElementById('searchContainerBox').style.boxShadow='0 8px 24px rgba(0,0,0,0.4)';" onkeyup="performGlobalSearch()" autocomplete="off">
                 </div>
                 
                 <div id="searchResults" style="display: none; position: absolute; top: calc(100% + 10px); left: 0; width: 100%; background: rgba(30, 6, 10, 0.98); padding: 15px; border-radius: 12px; border: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.7); max-height: 350px; overflow-y: auto; backdrop-filter: blur(10px);"></div>
@@ -583,7 +607,7 @@
                 <h1 class="portal-main-title" style="margin-bottom: 5px; font-size: clamp(1.8rem, 4vw, 2.5rem); color: white;">Faculty Portal</h1>
                 
                 <div class="portal-sub-title" style="margin-top: 10px; color: #FFD700; font-size: 1.1rem; display: flex; align-items: center;">
-                    Welcome, {{ 'SSLG' if role == 'sslg' else 'Teacher' }} {{ username }}
+                    Welcome, {{ 'SSLG' if role == 'sslg' else ('Admin' if is_admin else 'Teacher') }} {{ username }}
                     
                     <!-- Added tabindex="0" so it reacts to mobile taps instantly -->
                     <div class="info-tooltip-container" tabindex="0" style="position: relative; display: inline-flex; margin-left: 10px; cursor: pointer; outline: none;">
@@ -613,7 +637,7 @@
                 </div>
                 <div class="portal-card" onclick="switchViewAndRemember('announcements')" style="cursor: pointer;">
                     <h3>Announcements</h3>
-                    <div class="card-content-preview">Broadcast bulletins to specific enrolled classes.</div>
+                    <div class="card-content-preview"><strong style="color: #FFD700;">{{ announcements|length }}</strong> announcement{{ '' if announcements|length == 1 else 's' }} posted. Send a bulletin to all students.</div>
                     <div class="card-hover-footer">Post Update &rarr;</div>
                 </div>
                 <div class="portal-card" onclick="switchViewAndRemember('events')" style="cursor: pointer;">
@@ -639,11 +663,19 @@
 
             <div class="page-header-box">
                 <h2>All Students</h2>
-                <p>Every Grade 11 student on the school list, and whether they have signed up yet. <strong style="color:#FFD700;">{{ signup_stats.signed_up }} of {{ signup_stats.total }}</strong> have signed up.</p>
+                <p>Every student on the school list, and whether they have signed up yet. <strong style="color:#FFD700;">{{ signup_stats.signed_up }} of {{ signup_stats.total }}</strong> have signed up.</p>
             </div>
 
             <input type="text" id="studentSearchInput" onkeyup="filterStudents()" placeholder="Search by name, LRN, section, or status (e.g. 'not yet')..."
                    style="width: 100%; padding: 12px; margin-bottom: 15px; background: rgba(20, 2, 5, 0.9); border: 1px solid #FFD700; border-radius: 6px; color: white; outline: none; font-size: 1rem; box-sizing: border-box;">
+
+            {# Group the students by section (11 Antlia, 11 Carina, ... 12-Leda). Names stay A-Z inside each section. #}
+            {% set groups = {} %}
+            {% for s in students %}
+                {% set key = (s.official_section or s.section_name or 'Other accounts (e.g. 12-Leda, not on the Grade 11 list)')|string|trim %}
+                {% if key not in groups %}{% set _ = groups.update({key: []}) %}{% endif %}
+                {% set _ = groups[key].append(s) %}
+            {% endfor %}
 
             <div class="table-responsive" style="margin-bottom: 40px;">
                 <table>
@@ -653,10 +685,21 @@
                             <th>Section</th>
                             <th>LRN</th>
                             <th>Status</th>
+                            {% if is_admin %}<th>Action</th>{% endif %}
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for s in students %}
+                    {% for sec_name, sec_students in groups|dictsort %}
+                    <tbody class="section-group">
+                        <tr class="section-header">
+                            <td colspan="{{ 5 if is_admin else 4 }}" style="background: rgba(255,215,0,0.12); color: #FFD700; font-weight: bold; letter-spacing: 0.5px; padding: 12px 15px; border-left: 4px solid #FFD700;">
+                                {{ sec_name }}
+                                <span style="color: #ccc; font-weight: normal; font-size: 0.85rem; margin-left: 8px;">
+                                    {{ sec_students|length }} student{{ '' if sec_students|length == 1 else 's' }}
+                                    &middot; {{ sec_students|selectattr('signed_up')|list|length }} signed up
+                                </span>
+                            </td>
+                        </tr>
+                        {% for s in sec_students %}
                         <tr class="student-row" data-search="{{ s.full_name }} {{ s.official_section or '' }} {{ s.section_name or '' }} {{ s.lrn }} {{ 'signed up' if s.signed_up else 'not yet' }}">
                             <td style="font-weight: bold; color: white;">{{ s.full_name }}</td>
                             <td>{{ s.official_section or s.section_name or '—' }}</td>
@@ -668,18 +711,76 @@
                                 <span style="color: #aaa;">Not yet</span>
                                 {% endif %}
                             </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="4" style="text-align:center; padding: 30px; color: #888; font-style: italic;">No students found.</td>
+                            {% if is_admin %}
+                            <td style="white-space: nowrap;">
+                                {% if s.signed_up and s.id %}
+                                <button type="button" data-url="{{ url_for('admin_delete_user', role='student', user_id=s.id) }}" data-name="{{ s.full_name }}"
+                                        onclick="deleteStudentAccount(this)"
+                                        title="Deletes only the account. The student can sign up again."
+                                        style="background: #7f8c8d; color: white; padding: 6px 12px; font-size: 0.8rem; border: none; cursor: pointer; border-radius: 4px; margin-right: 6px;">Delete account</button>
+                                {% endif %}
+                                <button type="button" data-lrn="{{ s.lrn }}" data-name="{{ s.full_name }}" data-signed="{{ 1 if s.signed_up else 0 }}"
+                                        onclick="deleteStudentPermanently(this)"
+                                        title="Removes the student from the school list and deletes their account and data."
+                                        style="background: #e74c3c; color: white; padding: 6px 12px; font-size: 0.8rem; border: none; cursor: pointer; border-radius: 4px;">Delete permanently</button>
+                            </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
+                    {% else %}
+                    <tbody>
+                        <tr>
+                            <td colspan="{{ 5 if is_admin else 4 }}" style="text-align:center; padding: 30px; color: #888; font-style: italic;">No students found.</td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
                 </table>
             </div>
         </div>
     </section>
     {% endif %}
+
+    <!-- Admin: delete a student account right here (stays on this page) -->
+    <script>
+        function deleteStudentAccount(btn) {
+            const name = btn.dataset.name || 'this student';
+            if (!confirm('Delete the account of ' + name + '? Their quiz answers, submissions and event answers are deleted too. This cannot be undone.')) return;
+            btn.disabled = true; btn.textContent = 'Deleting...';
+            fetch(btn.dataset.url, { method: 'POST', credentials: 'same-origin' })
+                .then(r => { if (!r.ok) throw new Error('failed'); try { sessionStorage.setItem('studentDeleted', name); } catch (e) {} location.reload(); })
+                .catch(() => { alert('Could not delete this account. Please try again.'); btn.disabled = false; btn.textContent = 'Delete account'; });
+        }
+        // ADMIN ONLY: remove a student from the school list AND delete their account and data
+        function deleteStudentPermanently(btn) {
+            const name = btn.dataset.name || 'this student';
+            const signedUp = btn.dataset.signed === '1';
+            const msg = 'DELETE PERMANENTLY: ' + name + '?\n\n' +
+                'They will be removed from the school list' +
+                (signedUp ? ', and their account, quiz answers and submissions will be deleted too' : '') + '.\n' +
+                'They will NOT be able to sign up again unless you add them back to the list.\n\n' +
+                'This cannot be undone.';
+            if (!confirm(msg)) return;
+            btn.disabled = true; btn.textContent = 'Deleting...';
+            fetch('/admin/delete_student_permanently', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ lrn: btn.dataset.lrn })
+            })
+                .then(r => { if (!r.ok) throw new Error('failed'); try { sessionStorage.setItem('studentDeleted', name); } catch (e) {} location.reload(); })
+                .catch(() => { alert('Could not delete this student. Please try again.'); btn.disabled = false; btn.textContent = 'Delete permanently'; });
+        }
+        window.addEventListener('load', function () {
+            let who = null;
+            try { who = sessionStorage.getItem('studentDeleted'); sessionStorage.removeItem('studentDeleted'); } catch (e) {}
+            if (!who) return;
+            const t = document.createElement('div');
+            t.textContent = 'Deleted: ' + who;
+            t.style.cssText = 'position:fixed;top:18px;right:18px;z-index:99999;background:#3b0d13;color:#fff;border:1px solid #FFD700;border-left:5px solid #FFD700;border-radius:8px;padding:12px 16px;box-shadow:0 8px 24px rgba(0,0,0,.5);font-size:.9rem;';
+            document.body.appendChild(t); setTimeout(() => t.remove(), 4000);
+        });
+    </script>
 
     <!-- Simple JavaScript for the Live Search Bar -->
     <script>
@@ -695,6 +796,12 @@
                 } else {
                     row.style.display = "none";
                 }
+            });
+            // hide a section heading when none of its students match the search
+            document.querySelectorAll("tbody.section-group").forEach(group => {
+                const anyShown = Array.from(group.querySelectorAll(".student-row")).some(r => r.style.display !== "none");
+                const head = group.querySelector(".section-header");
+                if (head) head.style.display = anyShown ? "" : "none";
             });
         }
     </script>
@@ -977,7 +1084,7 @@
                             <td><strong>{{ ann.title }}</strong><br><span style="color: #ccc; font-size: 0.9rem; white-space: pre-wrap;">{{ ann.content }}</span></td>
                             <td style="color: #FFD700;">{{ (ann.date_posted or '')[:10] }}</td>
                             <td>{{ ann.posted_by }}</td>
-                            <td>{{ ann.subject_name or 'School-Wide' }}</td>
+                            <td>{{ ann.subject_name or 'Grade 11 Students' }}</td>
                             <td>
                                 {% if ann.teacher_id == me_id or is_admin %}
                                 <form method="POST" action="{{ url_for('delete_announcement', ann_id=ann.id) }}" style="display: inline-block; margin: 0;">
@@ -1019,7 +1126,7 @@
 
                         <div class="ev-full">
                             <label class="ev-label">Description / Details</label>
-                            <textarea name="description" class="lms-input" rows="2" placeholder="Event details..." required style="resize: vertical;"></textarea>
+                            <textarea name="description" class="lms-input" rows="5" placeholder="Event details..." required style="resize: vertical;"></textarea>
                         </div>
                         <div>
                             <label class="ev-label">Category</label>
@@ -1037,7 +1144,7 @@
                             <input type="url" name="form_link" class="lms-input" placeholder="https://forms.gle/...">
                         </div>
 
-                        <!-- Events are always shown to everyone (school-wide) -->
+                        <!-- Events are always shown to all Grade 11 students -->
                         <input type="hidden" name="is_school_wide" value="on">
 
                         <div class="ev-submit ev-full">
@@ -1355,7 +1462,7 @@
                 `).join('');
                 resultsDiv.style.display = 'block';
             } else {
-                resultsDiv.innerHTML = '<div style="padding: 20px; color: #aaa; text-align: center; font-style: italic;">No matching pages, events, or classes found.</div>';
+                resultsDiv.innerHTML = '<div style="padding: 20px; color: #aaa; text-align: center; font-style: italic;">No matching pages or events found.</div>';
                 resultsDiv.style.display = 'block';
             }
         }
@@ -1485,6 +1592,8 @@
                     const short = i.title.length > 12 ? i.title.substring(0, 12) + '...' : i.title;
                     if (i.type === 'event') {
                         pills += '<div class="event-dot event-campus" title="' + esc(i.title) + '">' + esc(short) + '</div>';
+                    } else if (i.type === 'announcement') {
+                        pills += '<div class="event-dot event-announce" title="Announcement: ' + esc(i.title) + '">' + esc(short) + '</div>';
                     } else {
                         pills += '<div class="event-dot event-personal" style="background:' + esc(i.color) + '; color:' + textColorFor(i.color) + ';" title="Tap to delete" onclick="event.stopPropagation(); tcDeleteNote(' + i.id + ');">\uD83D\uDDD1\uFE0F ' + esc(short) + '</div>';
                     }
@@ -1500,6 +1609,9 @@
             if (!list) return;
             const items = allItems().filter(i => i.date >= todayKey).sort((a, b) => String(a.when).localeCompare(String(b.when))).slice(0, 40);
             list.innerHTML = items.length ? items.map(i => {
+                if (i.type === 'announcement') {
+                    return '<div class="tc-item" style="border-left-color:#9b59b6"><div class="k" style="color:#c39bd3">Announcement posted</div><h4>' + esc(i.title) + '</h4><div class="w">' + esc(prettyWhen(i.when)) + '</div></div>';
+                }
                 if (i.type === 'event') {
                     return '<div class="tc-item" style="border-left-color:#3498db"><div class="k" style="color:#3498db">Campus Event</div><h4>' + esc(i.title) + '</h4><div class="w">' + esc(prettyWhen(i.when)) + '</div></div>';
                 }
